@@ -61,6 +61,9 @@ export class Lexer {
             case ';': this.addToken(TokenType.SEMICOLON); break;
             case '*': this.addToken(TokenType.STAR); break;
 
+            case '|':
+                this.addToken(this.match('|') ? TokenType.OR_OR : TokenType.OR);
+                break;
             case '&':
                 this.addToken(this.match('&') ? TokenType.AND_AND : TokenType.AND);
                 break;
@@ -86,10 +89,10 @@ export class Lexer {
                     this.addToken(TokenType.SLASH);
                 }
                 break;
-            case ' ': 
+            case ' ':
             case '\r':
             case '\t':
-            break;
+                break;
             case '\n':
                 this.line++; break;
             case '"':
@@ -99,7 +102,7 @@ export class Lexer {
                     this.number();
                 } else if (this.isAlpha(c)) {
                     this.identifier();
-                } else{
+                } else {
                     throw new Error(`miniJS: unexpexted expression ${c} at line ${this.line}`);
                 }
         }
@@ -119,11 +122,11 @@ export class Lexer {
         return this.isAlpha(c) || this.isDigit(c);
     }
 
-    identifier(){
-        while(this.isAlphaNumeric(this.present())){
+    identifier() {
+        while (this.isAlphaNumeric(this.present())) {
             this.advance();
         }
-        const key = this.source.slice(this.start,this.current);
+        const key = this.source.slice(this.start, this.current);
         const type = TokenType.KEYWORDS[key] ?? TokenType.IDENTIFIER;
         this.addToken(type);
     }
