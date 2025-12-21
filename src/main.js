@@ -1,19 +1,15 @@
 import { Lexer } from "./lexer.js";
+import { Parser } from "./parse.js";
 
 const source = 
 `
-// This is a comment
-let x = 42;
-if (x >= 10) {
-    print("x is big!");
-} else {
-    x = x + 1;
-}
-
-// arithmetic and comparison
-y = (x - 3) * 2 / 5;
+(1+x)*3
 
 `
 
 const lexer = new Lexer(source)
 console.log(lexer.scanTokens());
+
+const parser = new Parser(lexer.scanTokens());
+const ast = parser.parse();
+console.log(ast);
