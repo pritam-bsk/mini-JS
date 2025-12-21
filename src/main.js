@@ -12,7 +12,6 @@ if (x >= 10) {
 
 // arithmetic and comparison
 y = (x - 3) * 2 / 5;
-z = y != 0 && y < 10;
 
 `
 

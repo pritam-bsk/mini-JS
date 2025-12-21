@@ -21,8 +21,10 @@ export const TokenType = {
     GREATER_EQUAL: "GREATER_EQUAL",
     LESS: "LESS",
     LESS_EQUAL: "LESS_EQUAL",
-    AND: "AND",           
-    OR: "OR",             
+    AND: "AND",
+    AND_AND: "AND_AND",  
+    OR: "OR",
+    OR_OR: "OR_OR",   
 
     IDENTIFIER: "IDENTIFIER",
     STRING: "STRING",

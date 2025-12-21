@@ -61,6 +61,9 @@ export class Lexer {
             case ';': this.addToken(TokenType.SEMICOLON); break;
             case '*': this.addToken(TokenType.STAR); break;
 
+            case '&':
+                this.addToken(this.match('&') ? TokenType.AND_AND : TokenType.AND);
+                break;
             case '!':
                 this.addToken(this.match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
                 break;
@@ -92,10 +95,12 @@ export class Lexer {
             case '"':
                 this.string(); break;
             default:
-                if (this.isDigit()) {
+                if (this.isDigit(c)) {
                     this.number();
                 } else if (this.isAlpha(c)) {
                     this.identifier();
+                } else{
+                    throw new Error(`miniJS: unexpexted expression ${c} at line ${this.line}`);
                 }
         }
     }
@@ -124,6 +129,7 @@ export class Lexer {
     }
 
     number() {
+        console.log("here");
         while (this.isDigit(this.present())) {
             this.advance();
         }
