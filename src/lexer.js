@@ -132,7 +132,7 @@ export class Lexer {
     }
 
     number() {
-        console.log("here");
+        // console.log("here");
         while (this.isDigit(this.present())) {
             this.advance();
         }
