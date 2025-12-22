@@ -1,4 +1,5 @@
 import { BinaryExpr, LiteralExpr, VariableExpr, GroupingExpr } from './ast.js';
+import { PrintStmt, ExpressionStmt } from './stmt.js';
 
 export class Parser {
     constructor(tokens) {
@@ -20,8 +21,34 @@ export class Parser {
     }
 
     parse() {
-        return this.equality();
+        const statements = [];
+        while (!this.isAtEnd()) {
+            statements.push(this.statement());
+        }
+        return statements;
     }
+    statement() {
+        if (this.match("PRINT")) {
+            this.current++;
+            return this.printStatement();
+        }
+        return this.expressionStatement();
+    }
+
+
+    printStatement() {
+        const value = this.equality();
+        if(this.match("SEMICOLON")) this.current++;
+        else throw new Error(`expected ';' at line ${this.tokens[this.current].line}`);
+        return new PrintStmt(value);
+    }
+    expressionStatement() {
+        const value = this.equality();
+        if(this.match("SEMICOLON")) this.current++;
+        else throw new Error(`expected ';' at line ${this.tokens[this.current].line}`);
+        return new ExpressionStmt(value);
+    }
+
     equality() {
         let expr = this.comparison();
         while (this.match("EQUAL_EQUAL")) {
@@ -30,6 +57,7 @@ export class Parser {
         }
         return expr;
     }
+    
     comparison() {
         let expr = this.term();
         while (this.match("GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL")) {
@@ -63,7 +91,7 @@ export class Parser {
     primary() {
         if (this.match("NUMBER")) {
             this.current++;
-            return new LiteralExpr(this.tokens[this.current-1].literal)
+            return new LiteralExpr(this.tokens[this.current - 1].literal)
         }
         if (this.match("IDENTIFIER")) {
             this.current++;
