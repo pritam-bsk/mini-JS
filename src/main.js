@@ -4,16 +4,18 @@ import { Interpreter } from "./interpreter.js";
 
 const source = 
 `
-print 1 + 2 * 3;
-print (1 + 2) * 3;
-print 10 / 2 / 5;
+let a = 10;
+let b = a;
+let c = b;
+print c;
 
 `
 
 const lexer = new Lexer(source);
-// console.log(lexer.scanTokens());
+const tokens = lexer.scanTokens();
+// console.log(tokens);
 
-const parser = new Parser(lexer.scanTokens());
+const parser = new Parser(tokens);
 const statements = parser.parse();
 // console.log(statements);
 

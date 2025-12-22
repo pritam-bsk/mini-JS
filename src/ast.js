@@ -27,3 +27,11 @@ export class GroupingExpr {
         this.expression = expression;
     }
 }
+
+export class AssignExpr {
+  constructor(name, value) {
+    this.type = "Assign";
+    this.name = name;
+    this.value = value;
+  }
+}

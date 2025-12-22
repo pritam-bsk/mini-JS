@@ -11,3 +11,11 @@ export class PrintStmt {
     this.expression = expr;
   }
 }
+
+export class VarStmt {
+  constructor(name, initializer) {
+    this.type = "VarStmt";
+    this.name = name;
+    this.initializer = initializer;
+  }
+}

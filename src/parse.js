@@ -1,5 +1,5 @@
-import { BinaryExpr, LiteralExpr, VariableExpr, GroupingExpr } from './ast.js';
-import { PrintStmt, ExpressionStmt } from './stmt.js';
+import { BinaryExpr, LiteralExpr, VariableExpr, GroupingExpr, AssignExpr } from './ast.js';
+import { PrintStmt, ExpressionStmt, VarStmt } from './stmt.js';
 
 export class Parser {
     constructor(tokens) {
@@ -32,19 +32,45 @@ export class Parser {
             this.current++;
             return this.printStatement();
         }
+        if (this.match("LET")) {
+            this.current++;
+            return this.varStatement();
+        }
         return this.expressionStatement();
     }
 
+    varStatement() {
+        const nameToken = this.tokens[this.current];
+        if (this.match("IDENTIFIER")) {
+            this.current++;
+        } else {
+            throw new Error(`expected variable name at line ${this.tokens[this.current].line}`);
+        }
+
+        let initializer = null;
+        if (this.match("EQUAL")) {
+            this.current++;
+            initializer = this.equality();
+        }
+
+        if (this.match("SEMICOLON")) {
+            this.current++;
+        } else {
+            throw new Error(`expected ';' at line ${this.tokens[this.current].line}`);
+        }
+
+        return new VarStmt(nameToken.lexeme, initializer);
+    }
 
     printStatement() {
         const value = this.equality();
-        if(this.match("SEMICOLON")) this.current++;
+        if (this.match("SEMICOLON")) this.current++;
         else throw new Error(`expected ';' at line ${this.tokens[this.current].line}`);
         return new PrintStmt(value);
     }
     expressionStatement() {
         const value = this.equality();
-        if(this.match("SEMICOLON")) this.current++;
+        if (this.match("SEMICOLON")) this.current++;
         else throw new Error(`expected ';' at line ${this.tokens[this.current].line}`);
         return new ExpressionStmt(value);
     }
@@ -55,9 +81,20 @@ export class Parser {
             this.current++;
             expr = new BinaryExpr(expr, this.tokens[this.current - 1], this.comparison());
         }
+
+        if (this.match("EQUAL")) {
+            this.current++;
+            const value = this.equality();
+
+            if (expr.type === "Variable") {
+                return new AssignExpr(expr.name, value);
+            }
+
+            throw new Error("Invalid assignment target.");
+        }
         return expr;
     }
-    
+
     comparison() {
         let expr = this.term();
         while (this.match("GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL")) {
@@ -95,7 +132,7 @@ export class Parser {
         }
         if (this.match("IDENTIFIER")) {
             this.current++;
-            return new VariableExpr(this.tokens[this.current].lexeme)
+            return new VariableExpr(this.tokens[this.current-1].lexeme)
         }
         if (this.match("LEFT_PAREN")) {
             this.current++;
