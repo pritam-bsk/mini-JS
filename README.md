@@ -27,7 +27,34 @@ Implements a **lexer**, **parser**, **scope & environment**, **closures**, **cal
 - ✅ Interpreate statements & minimal error handeling
 - ⭕️ Block scope & nested environments
 - ⭕️ Controll flow (if/while);
+n
 - ⭕️ function & call stack
+
+## ⏳ Till now 
+- it can handel complex expression
+- declaration statements
+- assignment statements
+- print statements
+- Examples: 
+```bash
+let a = 1; // comment
+let b = 2;
+print a + (b = 5) * 2; // prints 11;
+
+```
+```bash
+let a = 10;
+let b = a;
+let c = b;
+print c;
+```
+```bash
+let a = 5;
+let b = 3;
+a = b = 7;
+print a;
+print b;
+```
 
 ## ⭐️ If you find this useful, consider giving it a star!
 * Developer: Pritam Basak
